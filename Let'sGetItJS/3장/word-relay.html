@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>끝말잇기</title>
+    <style></style>
+  </head>
+  <body>
+    <div>
+      <div><span id="order">1</span>번째 참가자</div>
+      <div>제시어: <span id="word"></span></div>
+      <input type="text">
+    <button>입력</button>
+    </div>
+    <script>
+      const number = Number(prompt('몇명이 참가하나요?'))
+      const $button = document.querySelector('button')
+      const $input = document.querySelector('input')
+      const $order = document.querySelector('#order')
+      const $word = document.querySelector('#word')
+
+      let word
+      let currentWord
+
+      const onInput = (e) => {
+        currentWord = e.target.value
+      }
+
+      const checkWord = () => {
+        if(word[word.length-1] !== currentWord[0]){
+          return alert('단어가 제시되지 않았거나 올바르지 않습니다')
+        }
+        if(currentWord.length !== 3){
+          return alert('3글자 아님')
+        }
+        return true    
+      }
+
+      const onClickBtn = () => {
+        if(!word){
+          word = currentWord
+          $word.textContent = word
+        }
+        let isValidWord = checkWord()
+        if(isValidWord){
+          word = currentWord
+          $word.textContent = word
+        }
+        
+  
+        const order = Number($order.textContent)
+          if(order + 1 > number){
+             $order.textContent = 1
+          } else {
+            $order.textContent = order+1
+          }
+        $input.value = ''
+        $input.focus();
+      }
+
+      $input.addEventListener('input',onInput)
+      $button.addEventListener('click',onClickBtn);
+      
+    </script>
+  </body>
+</html>
+</html>
+
+1. 몇명이 참가할지 선택
+2. 참가자 순서정하기
+3. 제시어 저장 변수 지정
+-입력
+4. 제시어 유무 확인
+4.1(yes) 끝말잇기 진행 중
+  5. 다음 사람이 단어 말하기
+  6. 단어가 올바른가
+  7-1(yes)
+    다음사람이 다음 단어를 말한다 -end-
+  7-2(no) 
+     틀렸다고 표시한다 -end-
+
+4.2(no) 첫 번째 사람 차례
+  5. 제시어 입력한다.
+  6. 다음사람이 다음 단어를 말한다 -end-
+
+4. 다음 사람이 단어 말하기
+5. 단어가 올바른가
+5-1(yes) 6. 다음사람이 다음 단어를 말한다
+5-2(no) 7. 틀렸다고 표시한다
