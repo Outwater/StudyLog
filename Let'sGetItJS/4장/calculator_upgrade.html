@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8"> 
+    <title>계산기</title>
+    <style>
+        *{box-sizing: border-box;}
+        #result { width: 180px; height: 50px; margin:5px; text-align: right;}
+        #operator { width: 50px; height: 50px; margin:5px; text-align: center;}
+        button {width: 50px; height: 50px; margin: 5px;}
+    </style>
+</head>
+<body>
+    <input readonly id="operator">
+    <input readonly id="result">
+    <div>
+        <button id="num7" class="num">7</button>
+        <button id="num8" class="num">8</button>
+        <button id="num9" class="num">9</button>
+        <button id="plus" class="operator">+</button>
+    </div>
+    <div>
+        <button id="num4" class="num">4</button>
+        <button id="num5" class="num">5</button>
+        <button id="num6" class="num">6</button>
+        <button id="minus" class="operator">-</button>
+    </div>
+    <div>
+        <button id="num1" class="num">1</button>
+        <button id="num2" class="num">2</button>
+        <button id="num3" class="num">3</button>
+        <button id="divide" class="operator">/</button>
+    </div>
+    <div>
+        <button id="clear">C</button>
+        <button id="num0" class="num">0</button>
+        <button id="calculate">=</button>
+        <button id="multiply" class="operator">*</button>
+    </div>
+</body>
+<script>
+    let numOne = '';
+    let numTwo = '';
+    let operator = '';
+
+    const $operator = document.querySelector('#operator')
+    const $result = document.querySelector('#result')
+    const $numBtns = document.querySelectorAll('.num')
+    const $operatorBtns = document.querySelectorAll('.operator')
+
+    const onClickNumber = (num) => () => { // 고차함수로 함수를 리턴하게 하기 위해서 (num)=> return 이 아닌 (num)=> () => {}을 사용
+        if(!operator){
+            numOne += num;
+            $result.value += num;
+            return 
+        } 
+        if(!numTwo){
+            $result.value = ''
+        }
+        numTwo += num;
+        $result.value += num;
+        console.log([numOne,operator,numTwo])
+    }
+    $numBtns.forEach(($btn)=>{
+        let value = $btn.textContent
+        $btn.addEventListener('click', onClickNumber(value))
+    })
+
+    const onClickOperator = (op) => () => {
+        if(!numOne){
+            alert('숫자를 먼저 입력해주세요')
+        } else if(operator) {
+            alert('계산할 숫자를 입력해주세요')
+        } else {
+            operator += op
+            $operator.value = operator;
+        }
+        
+        console.log([numOne,operator,numTwo])
+    }
+    $operatorBtns.forEach(($btn)=> {
+        let value = $btn.textContent
+        $btn.addEventListener('click', onClickOperator(value))
+    })
+
+    const onClickClear = () => {
+        numOne = ''
+        numTwo = ''
+        operator = ''
+        $result.value = ''
+        $operator.value = ''
+    }
+    document.querySelector('#clear').addEventListener('click',onClickClear)
+
+    const onClickCalulate = (e) => {
+        if(!numOne || !numTwo || !operator){
+            return alert('숫자 혹은 연산자를 모두 입력 후 계산하세요')
+        }
+
+        let value = 0;
+        if(operator === '+'){ value =  Number(numOne) + Number(numTwo)}
+        else if(operator === '-'){ value = Number(numOne) - Number(numTwo)}
+        else if(operator === '/'){ value = Number(numOne) / Number(numTwo)}
+        else if(operator === '*'){ value = Number(numOne) * Number(numTwo)}
+        
+        $operator.value = '='
+        $result.value = Number(value)
+
+        numOne = value;
+        operator = '';
+        numTwo = ''
+    }
+    document.querySelector('#calculate').addEventListener('click',onClickCalulate)
+</script>
+</html>
