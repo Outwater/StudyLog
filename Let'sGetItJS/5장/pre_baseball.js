@@ -3,17 +3,30 @@ function baseball(answer) {
   function makeGuessNumber() {
     let guess = [];
     while (guess.length < 4) {
-      let number = Math.floor(Math.random() * 10);
+      let number = Math.floor(Math.random() * 9 + 1);
       if (!guess.includes(number)) {
         guess.push(number);
       }
     }
     return guess;
   }
+  function makeGuessNumber2() {
+    let nums = [];
+    for (let i = 1; i < 10; i++) {
+      nums.push(i);
+    }
+    let guess = [];
+    for (let n = 0; n < 4; n++) {
+      let numIdx = Math.floor(Math.random() * nums.length); // 0 ~ 8
+      guess.push(nums[numIdx]);
+      nums.splice(numIdx, 1);
+    }
+    return guess;
+  }
 
   let ans = answer.split("").map((el) => Number(el));
   for (let i = 0; i < chance; i++) {
-    let guess = makeGuessNumber();
+    let guess = makeGuessNumber2();
     let strike = 0;
     let ball = 0;
     for (let idx = 0; idx < 4; idx++) {
