@@ -1,0 +1,107 @@
+<html>
+  <head>
+    <meta charset="uff-8" />
+    <title>숫자 야구 게임</title>
+  </head>
+  <body>
+    <form id="form">
+      <input type="text" id="input" />
+      <button>확인</button>
+    </form>
+    <div id="board"></div>
+    <script>
+      const $form = document.querySelector("#form");
+      const $input = document.querySelector("#input");
+      const $board = document.querySelector("#board");
+
+      const tries = []; // 시도했던 값들을 저장함
+      const makeAnswerNumber = () => {
+        let nums = [];
+        for (let i = 1; i < 10; i++) {
+          nums.push(i);
+        }
+        let guess = [];
+        for (let n = 0; n < 4; n++) {
+          let numIdx = Math.floor(Math.random() * nums.length); // 0 ~ 8
+          guess.push(nums[numIdx]);
+          nums.splice(numIdx, 1);
+        }
+        return guess;
+      };
+      const answer = makeAnswerNumber();
+
+      const checkInput = (value) => {
+        let errMsg = "";
+        if (value.length !== 4) errMsg = "4자리 숫자를 입력해주세요.";
+        if (new Set(value).size !== 4)
+          errMsg = "중복되지 않은 숫자를 입력해주세요";
+
+        if (tries.includes(value)) errMsg = "시도하지 않은 값을 입력해주세요.";
+
+        return errMsg ? alert(errMsg) : true;
+      };
+      const handleSubmit = (event) => {
+        event.preventDefault(); // 폼 태그의 기본동작을 취소(제출 시 새로고침)
+        const value = $input.value;
+        $input.value = "";
+
+        const valid = checkInput(value); // 3.제출형식검사
+        if (!valid) return;
+
+        tries.push(value);
+        if (answer.join("") === value) {
+          // 4. 정답여부 확인
+          $board.textContent = "정답입니다.";
+          return;
+        }
+
+        if (tries.length === 10) {
+          // 5. 시도횟수 10회 확인
+          $board.textContent = "실패!! 10번의 기회를 모두 사용했습니다.";
+          return;
+        }
+        let [strike, ball] = getResult2(value, answer); //6. Strike & Ball 표시
+        $board.append(
+          `${tries.length}번째 시도 결과:${value}는 ${strike}S ${ball}B 입니다.`
+        );
+        $board.append(document.createElement("br"));
+        return;
+        function getResult2(value, answer) {
+          let strike = 0;
+          let ball = 0;
+          answer.forEach((el, elIdx) => {
+            const index = value.indexOf(String(el));
+            if (index > -1) {
+              // 일치하는 숫자 있는 것
+              if (elIdx === index) {
+                strike++;
+              } else {
+                ball++;
+              }
+            }
+          });
+          return [strike, ball];
+        }
+        function getResult(value, answer) {
+          let guess = value.split("").map((el) => Number(el));
+          let strike = 0;
+          let ball = 0;
+          for (let i = 0; i < 4; i++) {
+            if (answer[i] === guess[i]) {
+              strike++;
+            } else {
+              for (let j = 0; j < 4; j++) {
+                if (i === j) continue;
+                if (answer[i] === guess[j]) {
+                  ball++;
+                }
+              }
+            }
+          }
+          return [strike, ball];
+        }
+      };
+      $form.addEventListener("submit", handleSubmit);
+    </script>
+  </body>
+</html>
