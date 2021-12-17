@@ -1,9 +1,7 @@
 const messageList = document.querySelector("ul");
 const nickForm = document.querySelector("#nick");
 const messageForm = document.querySelector("#message");
-// front와 back 연결하기
-const socket = new WebSocket(`ws://${window.location.host}`);
-// 서버와 연결 안내
+
 socket.addEventListener("open", () => {
   console.log("Connected to Server");
 });
