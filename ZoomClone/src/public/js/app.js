@@ -1,44 +1,17 @@
-const messageList = document.querySelector("ul");
-const nickForm = document.querySelector("#nick");
-const messageForm = document.querySelector("#message");
+const socket = io();
+// 브라우저에서 접근가능한 socket.io.js 파일에서 기본적으로 io함수를 제공한다.
+// 알아서 열려 있는 socket 통로를 찾는 역할도 함
+// sockets.push 에서 일일이 socket의 unique id를 넣어준 것에서, 연결된 socketId를 기본적으로 제공함
 
-socket.addEventListener("open", () => {
-  console.log("Connected to Server");
-});
+const welcome = document.getElementById("welcome");
+const form = welcome.querySelector("form");
 
-const makeMessage = (type, payload) => {
-  const msg = { type, payload };
-  return JSON.stringify(msg);
-};
-// 서버에서 보낸 메세지 받기
-socket.addEventListener("message", (msg) => {
-  const li = document.createElement("li");
-  li.innerText = msg.data;
-  messageList.append(li);
-});
-//msg 객체에는 수 많은 프로퍼티 존재
-// msg.data, meg.timestamp 많이 쓰임
-
-socket.addEventListener("close", () => {
-  console.log("Disconnected with Server🆇 ");
-});
-
-const handleSubmit = (event) => {
+function handleRoomSubmit(event) {
   event.preventDefault();
-  const input = messageForm.querySelector("input");
-  socket.send(makeMessage("message", input.value));
-
-  const li = document.createElement("li");
-  li.innerText = `ME: ${input.value}`;
-  messageList.append(li);
+  const input = form.querySelector("input");
+  socket.emit("enter_room", { payload: input.value }, () => {
+    console.log("client에서 보낸 callback 실행");
+  });
   input.value = "";
-};
-const handleNickSubmit = (event) => {
-  event.preventDefault();
-  const input = nickForm.querySelector("input");
-  socket.send(makeMessage("nickname", input.value));
-  input.value = "";
-};
-
-messageForm.addEventListener("submit", handleSubmit);
-nickForm.addEventListener("submit", handleNickSubmit);
+}
+form.addEventListener("submit", handleRoomSubmit);
