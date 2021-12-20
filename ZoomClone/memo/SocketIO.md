@@ -30,13 +30,21 @@
 
 ## SocketIO 설치, 세팅
 
-- step1
+**Sever**
 
-  - (Server) SocketIO import 후 http서버에 socketIO 올리기
-    - import SocketIO from 'socket.io'
-    - const io = SocketIO(server);
-  - socketIO 서버 실행하면 (http://localhost:3000/socket.io/socket.io.js)의 내장된 기능을 활용하기 위한 js파일 접근가능
+- SocketIO import 후 http서버에 socketIO 올리기
+  - import SocketIO from 'socket.io'
+  - const io = SocketIO(server);
+- socketIO 서버 실행하면 (http://localhost:3000/socket.io/socket.io.js)의 내장된 기능을 활용하기 위한 js파일 접근가능
+- 소켓 통로 확보
+  - io.on("connection", (socket) => { console.log(socket) });
 
-  - (Client)
+**Client**
 
+- home.pug & app.js 초기화 후, home.pug에서 script(src="/socket.io/socket.io.js")로 socket.io.js 세팅
+  - script(src="/socket.io/socket.io.js")
+- 브라우저에서 접근가능한 socket.io.js 파일에서 기본적으로 제공하는 io함수로 socket 통로 확보
+  - websocket과 다른 점
+    - 알아서 열려 있는 socket 통로를 찾는 역할도 함
+    - sockets.push 에서 일일이 socket의 unique id를 넣어준 것에서, 연결된 socketId를 기본적으로 제공함
 - step2
