@@ -47,4 +47,21 @@
   - websocket과 다른 점
     - 알아서 열려 있는 socket 통로를 찾는 역할도 함
     - sockets.push 에서 일일이 socket의 unique id를 넣어준 것에서, 연결된 socketId를 기본적으로 제공함
-- step2
+
+## SocketIO 사용
+
+room 기능 구현
+
+- socket.emit을 통한 msg 전송
+
+  - 첫번째 인자로 **Custom Event**의 이름 지정
+  - 두번째 인자로 **객체**를 포함 모든 타입의 정보를 전달 가능
+  - 세번째 인자로 **Callback함수**를 넘겨주어, server에서 해당 Callback함수를 실행하게 할 수 있음
+
+- webSocket과 다른 점
+  - 정해진 event(message)만 사용하는 것이 아니라 customEvent 생성하여 사용 가능한 점
+  - socket으로 전달하는 정보의 type의 제한이 없다는 점 (기존 string만 가능하여 JSON.stringify & parse 작업거쳐야했음)
+  - callback함수 전달 등으로 다양한 상황에서 사용 가능
+    - server에서 호출한 함수가 client에서 실행된 다는 점이 매우 특이한 점
+    - Fn정의(client) -> emit의 3번째 인자로 전달(c->s) -> Fn 호출(server) -> Fn 실행 (client)
+    - client에서 정의한 함수를 server에서 제어 및 호출 가능

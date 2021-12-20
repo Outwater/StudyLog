@@ -17,7 +17,12 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 httpServer.listen(3000, handleListen);
 
 io.on("connection", (socket) => {
-  console.log(socket);
+  socket.on("enter_room", (msg, cb) => {
+    console.log(msg);
+    setTimeout(() => {
+      cb();
+    }, 5000);
+  });
 });
 
 /*
