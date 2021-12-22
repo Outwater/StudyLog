@@ -155,3 +155,14 @@ socket 관련 API는 공식문서 참고
 
 - Set
   - es6도입 된 자료형으로 iterable하며 중복된 요소를 포함하지 않는 특징을 가짐
+
+### Admin UI 추가하기
+
+[문서 링크](https://socket.io/docs/v4/admin-ui/)
+
+- 현재 연결되어 있는 sockets, rooms, client, server를 모두 보여주고, socket이나 room의 연결을 끊는 등의 기능을 갖추고 있다.
+
+- npm i @socket.io/admin-ui
+- instrument로 auth 설정할 수 있고, cors설정도 가능하다.
+
+- 세팅 이후 https://admin.socket.io 에 접속하여 dashboard 확인 가능

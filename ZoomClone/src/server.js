@@ -1,5 +1,6 @@
 import http from "http";
-import SocketIO from "socket.io";
+import { Server } from "socket.io";
+import { instrument } from "@socket.io/admin-ui";
 import express from "express";
 
 const app = express();
@@ -11,7 +12,15 @@ app.get("/", (req, res) => res.render("home"));
 app.get("/*", (req, res) => res.redirect("/"));
 
 const httpServer = http.createServer(app);
-const io = SocketIO(httpServer); //
+const io = new Server(httpServer, {
+  cors: {
+    origin: ["https://admin.socket.io"],
+    credentials: true,
+  },
+}); //
+instrument(io, {
+  auth: false,
+});
 
 function publicRooms() {
   // const sids = io.sockets.adapter.sids
@@ -72,7 +81,10 @@ io.on("connection", (socket) => {
   });
 });
 
-const handleListen = () => console.log(`Listening on http://localhost:3000`);
+const handleListen = () =>
+  console.log(
+    `Listening on http://localhost:3000 && admin on https://admin.socket.io`
+  );
 httpServer.listen(3000, handleListen);
 /*
 브라우저에서 socket연결되면 여기서 컨트롤 할 수 있음
