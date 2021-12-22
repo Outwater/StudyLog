@@ -10,7 +10,6 @@ const $entrance = document.getElementById("entrance");
 const $roomForm = $entrance.querySelector("form");
 
 const $chatRoom = document.getElementById("chat-room");
-const $ul = document.querySelector("ul");
 
 let nickname = "";
 let = roomName = "";
@@ -34,6 +33,7 @@ function handleNicknameSubmit(event) {
 }
 
 function addMessage(msg) {
+  const $ul = document.querySelector("#chat-room ul");
   const $li = document.createElement("li");
   $li.textContent = msg;
   $ul.append($li);
@@ -66,13 +66,33 @@ function handleMsgSubmit(event) {
 }
 $nickForm.addEventListener("submit", handleNicknameSubmit);
 
+function updateTitle(roomName, roomCount) {
+  const h3 = document.querySelector("h3");
+  h3.textContent = `Room ${roomName} (${roomCount})`;
+}
 socket.on("welcome", (payload) => {
-  const { roomName, user } = payload;
+  const { roomName, user, roomCount } = payload;
+  updateTitle(roomName, roomCount);
   addMessage(`${roomName}방에 ${user}님이 입장했습니다`);
 });
 socket.on("bye", (payload) => {
   addMessage(`${payload.user}님이 퇴장하였습니다`);
+  updateTitle(roomName, payload.roomCount);
 });
-socket.on("new_message", (payload) =>
-  addMessage(`${payload.user}: ${payload.msg}`)
-);
+socket.on("new_message", (payload) => {
+  addMessage(`${payload.user}: ${payload.msg}`);
+});
+
+socket.on("room_change", (rooms) => {
+  const roomList = $entrance.querySelector("ul");
+  //rooms가 비어있는 상태로 오면 렌더링 업데이틀를 하지 않기 때문에
+  roomList.innerHTML = "";
+  if (rooms.length === 0) {
+    return;
+  }
+  rooms.forEach((room) => {
+    const li = document.createElement("li");
+    li.innerText = room;
+    roomList.append(li);
+  });
+});

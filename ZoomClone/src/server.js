@@ -13,12 +13,27 @@ app.get("/*", (req, res) => res.redirect("/"));
 const httpServer = http.createServer(app);
 const io = SocketIO(httpServer); //
 
-const handleListen = () => console.log(`Listening on http://localhost:3000`);
-httpServer.listen(3000, handleListen);
+function publicRooms() {
+  // const sids = io.sockets.adapter.sids
+  // const rooms = io.sockets.adapter.rooms
+  const { sids, rooms } = io.sockets.adapter;
 
+  const publicRooms = [];
+  rooms.forEach((_, key) => {
+    if (sids.get(key) === undefined) {
+      publicRooms.push(key);
+    }
+  });
+  return publicRooms;
+}
+
+function countRoom(roomName) {
+  return io.sockets.adapter.rooms.get(roomName)?.size;
+}
 io.on("connection", (socket) => {
   socket["nickname"] = "익명";
   socket.onAny((event) => {
+    console.log(io.sockets.adapter);
     console.log(`Socket Event: ${event}`);
   });
   socket.on("enter_room", (payload, cb) => {
@@ -28,22 +43,37 @@ io.on("connection", (socket) => {
     }
     socket.join(roomName);
     cb();
-    socket.to(roomName).emit("welcome", { roomName, user: socket.nickname });
+    socket.to(roomName).emit("welcome", {
+      roomName,
+      user: socket.nickname,
+      roomCount: countRoom(roomName),
+    });
+    io.sockets.emit("room_change", publicRooms());
   });
 
   socket.on("new_message", (payload, done) => {
+    console.log("server newmessage");
     const { msg, roomName } = payload;
     socket.to(roomName).emit("new_message", { msg, user: socket.nickname });
     done();
   });
 
   socket.on("disconnecting", () => {
-    socket.rooms.forEach((room) =>
-      socket.to(room).emit("bye", { user: socket.nickname })
+    socket.rooms.forEach(
+      (room) =>
+        socket.to(room).emit("bye", {
+          user: socket.nickname,
+          roomCount: countRoom(room) - 1,
+        }) // disconnecting때는 room이 삭제되지 않았으므로 미리 1개 빼준다.
     );
+  });
+  socket.on("disconnect", () => {
+    io.sockets.emit("room_change", publicRooms());
   });
 });
 
+const handleListen = () => console.log(`Listening on http://localhost:3000`);
+httpServer.listen(3000, handleListen);
 /*
 브라우저에서 socket연결되면 여기서 컨트롤 할 수 있음
 socket은 연결된 브라우저의 정보를 가지고 있음

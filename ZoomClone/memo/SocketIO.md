@@ -91,8 +91,8 @@ socket 관련 API는 공식문서 참고
 - socket.to( ${socket.id}).emit(-)
   - 특정 개인에게만 메세지 보내기 가능
 - socket.on("disconnecting", ()=>{}) // disconnecting 이벤트 사용
-  - disconnect(완전히 끊어진 연결)
-  - disconnecting(잠시 연결이 끊어졌을 때 - 접속은 끊어졌지만 방을 나가지는 않았을 때)
+  - disconnect(완전히 끊어진 연결 - 방이 사라짐)
+  - disconnecting(연결이 끊어지기 직전 - 접속은 끊어졌지만 방을 나가지는 않았을 때)
 
 **Client**
 
@@ -107,3 +107,51 @@ socket 관련 API는 공식문서 참고
 - (기타) 정말 많은 기능을 가지고 있기 때문에 document확인 할 것
   - io.socketsJoin("room1");
   - 접속 시 모든 소켓에 특정 room을 입장시킬 수 있다.(ex공지방)
+
+### Room Count
+
+**Adapter**
+
+- Adapter는 여러 서버들이 있을 때, 서버들의 데이터를 동기화하는 것
+- 보통 실제 서비스에서는 서버 과부하 문제를 해결하기 위해 여러개의 서버를 두게 된다.
+  이때, 서버는 같은 memoery를 공유하고 있지 않기 때문에, 다른 서버에 있는 client의 정보에 접근하기 위해서는 Adapter를 통해 데이터를 동기화하여 받아온다.
+- 모든 데이터는 데이터베이스에 저장되고, 이를 Adapter를 거쳐 제공되기 때문에, Adapter는 누가 연결되어 있고, 현재 얼마나 많은 room이 어플리케이션에 있는 지 알 수 있다.
+
+- io.sockets.adapter를 console에 찍어 확인
+
+  - rooms: Map(5)와 sids: Map(5)를 확인할 수 있다.
+  - socketId는 생성되어 있는 소켓의 고유 id이며, room은 모든 socket에서 생성돤 room의 id를 의미(\*socket은 기본적으로 id값으로 하나의 room을 가진다.)
+  - 기본적으로 생성된 sid값으로 하는 room을 privateRoom으로, user가 생성한 것을 publicRoom으로 생각한다
+    - privateRoom: rooms와 sids에 공통적으로 존재할 때
+    - publickRoom: rooms에는 있지만 sids에는 존재하지 않을 때
+
+**private, public Room 구분하기**
+
+- publicRooms 함수
+
+  - rooms를 순회하며, sids에 포함여부를 확인하여 publicRooms를 구하고 return
+
+- socket연결과 종료시에 생성,삭제 된 publicRoom에 접근할 수 있다.
+
+  - io.sockets.emit("room_change", publicRooms());
+    - 연결되어 있는 모든 소켓(not room)에게 message를 전달할 수 있다.
+  - disconnecting은 연결이 끊기기 직전이기 때문에, 방을 나간 것을 반영할 수 없다. 따라서 disconnect 이벤트를 통해 변경된 publicRooms를 보내준다.
+
+- client에서는 room_change이벤트에 대하여 publicRooms를 받고 이를 반영해준다.
+
+**User Count**
+
+- io.sockets.adapter.rooms.get(roomName)?.size
+
+  - 특정 room이 가지고 있는 sids의 개수를 가져옴으로 user Cnt 구할 수 있다.
+    **Map과 Set**
+
+- Map
+
+  - es6에 도입 된 object와 비슷한 자료형
+  - unique keys를 가지고 있어 iterable 하다는 특징
+    - new Map() : 생성
+    - map.set(key, value), map.get(key) , ...
+
+- Set
+  - es6도입 된 자료형으로 iterable하며 중복된 요소를 포함하지 않는 특징을 가짐
