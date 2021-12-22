@@ -9,13 +9,18 @@ html(lang="en")
     body
         header
             h1 Noom
+            div#nick-header
         main
-            div#welcome
+            div#nickname
+                form
+                    input(placeholder="Nickname을 입력해주세요", type="text")
+                    button Next
+            div#entrance
                 form
                     input(placeholder="Room name", required, type="text")
                     button Enter Room
             h3
-            div#room
+            div#chat-room
                 ul
                 form
                     input(placeholder="Send Message", required, type="text")

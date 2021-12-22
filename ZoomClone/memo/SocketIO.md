@@ -98,3 +98,12 @@ socket 관련 API는 공식문서 참고
 
 - socket.on("event",(msg) => {})
   - 특정 이벤트를 받아, 화면상에 출력하도록 할 수 있음
+
+### 닉네임 추가하기
+
+- socket["nickname"] = 'payload.nickname'
+  - client에서 보낸 nickname으로 지정할 수 있다.
+  - socket.nickname으로 필요한 곳에서 사용
+- (기타) 정말 많은 기능을 가지고 있기 때문에 document확인 할 것
+  - io.socketsJoin("room1");
+  - 접속 시 모든 소켓에 특정 room을 입장시킬 수 있다.(ex공지방)

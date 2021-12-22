@@ -17,19 +17,30 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 httpServer.listen(3000, handleListen);
 
 io.on("connection", (socket) => {
-  socket.on("enter_room", (roomName, cb) => {
+  socket["nickname"] = "익명";
+  socket.onAny((event) => {
+    console.log(`Socket Event: ${event}`);
+  });
+  socket.on("enter_room", (payload, cb) => {
+    const { roomName, nickname } = payload;
+    if (nickname) {
+      socket["nickname"] = nickname;
+    }
     socket.join(roomName);
     cb();
-    socket.to(roomName).emit("welcome", roomName);
+    socket.to(roomName).emit("welcome", { roomName, user: socket.nickname });
   });
 
-  socket.on("new_message", (msg, room, done) => {
-    socket.to(room).emit("new_message", msg);
+  socket.on("new_message", (payload, done) => {
+    const { msg, roomName } = payload;
+    socket.to(roomName).emit("new_message", { msg, user: socket.nickname });
     done();
   });
 
   socket.on("disconnecting", () => {
-    socket.rooms.forEach((room) => socket.to(room).emit("bye"));
+    socket.rooms.forEach((room) =>
+      socket.to(room).emit("bye", { user: socket.nickname })
+    );
   });
 });
 
