@@ -17,11 +17,19 @@ const handleListen = () => console.log(`Listening on http://localhost:3000`);
 httpServer.listen(3000, handleListen);
 
 io.on("connection", (socket) => {
-  socket.on("enter_room", (msg, cb) => {
-    console.log(msg);
-    setTimeout(() => {
-      cb();
-    }, 5000);
+  socket.on("enter_room", (roomName, cb) => {
+    socket.join(roomName);
+    cb();
+    socket.to(roomName).emit("welcome", roomName);
+  });
+
+  socket.on("new_message", (msg, room, done) => {
+    socket.to(room).emit("new_message", msg);
+    done();
+  });
+
+  socket.on("disconnecting", () => {
+    socket.rooms.forEach((room) => socket.to(room).emit("bye"));
   });
 });
 

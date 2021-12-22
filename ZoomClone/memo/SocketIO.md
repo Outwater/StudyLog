@@ -65,3 +65,36 @@ room 기능 구현
     - server에서 호출한 함수가 client에서 실행된 다는 점이 매우 특이한 점
     - Fn정의(client) -> emit의 3번째 인자로 전달(c->s) -> Fn 호출(server) -> Fn 실행 (client)
     - client에서 정의한 함수를 server에서 제어 및 호출 가능
+
+## Socket IO Room & Room Msg구현
+
+socket 관련 API는 공식문서 참고
+공식문서 [링크](https://socket.io/docs/v4/server-api/#socketrooms)
+
+### 기본 메서드
+
+- socket.id
+  - 고유한 socket의 id 저장
+- socket.join("room_name")
+  - 특정 이름의 room으로 접속하기
+- socket.rooms
+  - 현재 연결된 socket의 room의 집합(Set)을 출력
+
+### 메세지 notification & 보내기
+
+**Sever**
+
+- socket.to("others").emit(-)
+  - 연결된 다른 모두에게 전송
+- socket.to(["room1","room2"]).emit(-)
+  - 지정된 room들에게만 전송 (ex. 채팅방 접속 알림)
+- socket.to( ${socket.id}).emit(-)
+  - 특정 개인에게만 메세지 보내기 가능
+- socket.on("disconnecting", ()=>{}) // disconnecting 이벤트 사용
+  - disconnect(완전히 끊어진 연결)
+  - disconnecting(잠시 연결이 끊어졌을 때 - 접속은 끊어졌지만 방을 나가지는 않았을 때)
+
+**Client**
+
+- socket.on("event",(msg) => {})
+  - 특정 이벤트를 받아, 화면상에 출력하도록 할 수 있음
