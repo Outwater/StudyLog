@@ -9,23 +9,8 @@ html(lang="en")
     body
         header
             h1 Noom
-            div#nick-header
+       
         main
-            div#nickname
-                form
-                    input(placeholder="Nickname을 입력해주세요", type="text")
-                    button Next
-            div#entrance
-                form
-                    input(placeholder="Room name", required, type="text")
-                    button Enter Room
-                h4 Open Rooms:
-                ul
-            h3
-            div#chat-room
-                ul
-                form
-                    input(placeholder="Send Message", required, type="text")
-                    button Send
+     
         script(src="/socket.io/socket.io.js")
         script(src="/public/js/app.js")  
