@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <title>반응속도 테스트</title> 
+</head>
+<body>
+    <div id="result"></div>
+    <div id="screen">
+    </div>
+    <div id="guide"></div>
+    <script>
+        const $result = document.getElementById("result")
+        const $screen = document.getElementById("screen")
+        const $guide = document.getElementById("guide")
+
+        $screen.style.width = '400px';
+        $screen.style.height = '400px';
+        $screen.style.textAlign = 'center';
+        $screen.style.background = 'blue';
+
+        $guide.innerHTML = 
+        `화면을 클릭하면 **빨간화면**이 나타나고 잠시 뒤 **초록 화면**이 나타납니다.<br/>
+        초록화면이 나오자마자 눌러 반응속도를 확인하세요.
+        `
+        let randomTimer = ''
+        let timer 
+        let start 
+        let end 
+        function changeColor(color){
+            $screen.style.background = color
+        }
+        function handleScreenClick(e){
+            let color = e.target.style.background
+            $result.textContent =''
+
+            if(color === 'blue'){
+                $guide.innerHTML = 'Click Anywhere'
+                changeColor('red')
+                $guide.innerHTML = 'Click Antwhere at Green'
+                randomTimer = Math.floor((Math.random()*1000)+2000)
+                console.log(randomTimer)
+                timer = setTimeout(()=>{
+                    changeColor('green')
+                    $guide.innerHTML = 'Click Now!!'
+                    start = new Date();
+                },randomTimer)
+            } else if (color === 'red'){
+                clearTimeout(timer)
+                $guide.innerHTML = '너무 성급하게 클릭하셨네요. 다시 시도해주세요.'
+                changeColor('blue')
+                start = ''
+                end = ''
+            } else if (color === 'green'){
+                $guide.innerHTML = ''
+                end = new Date()
+                $result.textContent = `당신의 반응속도는 ${end - start}ms입니다.`
+                start = ''
+                end = ''
+                changeColor('blue')
+            }
+        }
+        $screen.addEventListener("click",handleScreenClick)
+
+    </script>
+</body>
+</html>
