@@ -1,62 +1,75 @@
 <!DOCTYPE html>
 <head>
     <meta charset="utf-8">
-    <title>반응속도 테스트</title> 
+    <title>반응속도 테스트</title>
+    <style>
+        #screen {
+            width: 400px;
+            height: 400px;
+            text-align: center;
+            user-select: none; 
+
+            color: white;
+        }
+
+        #screen.waiting{
+            background-color: blue;
+        }
+        #screen.ready{
+            background-color: red;
+        }
+        #screen.click{
+            background-color: green;
+        }
+    </style>
 </head>
 <body>
     <div id="result"></div>
-    <div id="screen">
-    </div>
-    <div id="guide"></div>
+    <div id="screen" class="waiting"></div>
     <script>
         const $result = document.getElementById("result")
         const $screen = document.getElementById("screen")
-        const $guide = document.getElementById("guide")
 
-        $screen.style.width = '400px';
-        $screen.style.height = '400px';
-        $screen.style.textAlign = 'center';
-        $screen.style.background = 'blue';
-
-        $guide.innerHTML = 
-        `화면을 클릭하면 **빨간화면**이 나타나고 잠시 뒤 **초록 화면**이 나타납니다.<br/>
-        초록화면이 나오자마자 눌러 반응속도를 확인하세요.
-        `
-        let randomTimer = ''
+        $screen.innerHTML = 'Click Anywhere To Start'
         let timer 
-        let start 
-        let end 
-        function changeColor(color){
-            $screen.style.background = color
+        let startTime 
+        let endTime
+        let records = [];
+        function changeStatus(from, to){
+            $screen.classList.replace(from,to)
         }
         function handleScreenClick(e){
-            let color = e.target.style.background
+            const isScreen = (status) => $screen.classList.contains(status);
+            
             $result.textContent =''
+            if(isScreen('waiting')){
+                changeStatus('waiting','ready')
+                $screen.innerHTML = 'Click Antwhere at Green'
 
-            if(color === 'blue'){
-                $guide.innerHTML = 'Click Anywhere'
-                changeColor('red')
-                $guide.innerHTML = 'Click Antwhere at Green'
-                randomTimer = Math.floor((Math.random()*1000)+2000)
-                console.log(randomTimer)
+                let randomTimer = Math.floor((Math.random()*1000)+2000) //2초~3초 사이
                 timer = setTimeout(()=>{
-                    changeColor('green')
-                    $guide.innerHTML = 'Click Now!!'
-                    start = new Date();
+                    startTime = new Date();
+                    changeStatus('ready','click')
+                    $screen.innerHTML = 'Click Now!!'  
                 },randomTimer)
-            } else if (color === 'red'){
+            } else if (isScreen('ready')){
                 clearTimeout(timer)
-                $guide.innerHTML = '너무 성급하게 클릭하셨네요. 다시 시도해주세요.'
-                changeColor('blue')
-                start = ''
-                end = ''
-            } else if (color === 'green'){
-                $guide.innerHTML = ''
-                end = new Date()
-                $result.textContent = `당신의 반응속도는 ${end - start}ms입니다.`
-                start = ''
-                end = ''
-                changeColor('blue')
+                $result.innerHTML = '너무 성급하게 클릭하셨네요. 다시 시도해주세요.'
+                changeStatus('ready','waiting')
+                $screen.innerHTML = 'Click Anywhere To Start'
+                startTime = null
+                endTime = null
+            } else if (isScreen('click')){
+                $screen.innerHTML = ''
+                endTime = new Date()
+                const current = endTime - startTime;
+                records.push(current)
+                const avg = (records.reduce((acc,cur)=> acc+cur) / records.length).toFixed(2)
+                $result.innerHTML = `현재 반응속도: ${current}ms<br /> 총 시도 횟수 : ${records.length}회 평균 속도: ${avg}ms`
+                startTime = null
+                endTime = null
+                changeStatus('click','waiting')
+                $screen.innerHTML = 'Click Anywhere To Start'
             }
         }
         $screen.addEventListener("click",handleScreenClick)
