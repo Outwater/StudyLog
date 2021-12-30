@@ -65,7 +65,14 @@
                 const current = endTime - startTime;
                 records.push(current)
                 const avg = (records.reduce((acc,cur)=> acc+cur) / records.length).toFixed(2)
-                $result.innerHTML = `현재 반응속도: ${current}ms<br /> 총 시도 횟수 : ${records.length}회 평균 속도: ${avg}ms`
+                const fastest = () => {
+                    let top5 = ''
+                    records.sort((a,b)=> a-b).slice(0,5).forEach(el => top5 += `, ${el}ms`)
+                    return top5.slice(1)
+                }
+                $result.innerHTML = `현재 반응속도: ${current}ms<br />
+                총 시도 횟수 : ${records.length}회 평균 속도: ${avg}ms <br/>
+                최고기록 : ${fastest()}`
                 startTime = null
                 endTime = null
                 changeStatus('click','waiting')
