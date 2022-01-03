@@ -1,14 +1,27 @@
-//* 고쳐야할 점
-//Todo 1. setState는 state의 형식을 받아, 기존의 state를 대체하도록 해야함
-// -> setState(), onClickAdd내 인자형식 반영 완료
-//Todo 2. render() 함수 내에서 innerHTML에 백틱문자열을 이용하여 html삽입해보기
-// render 함수 반영완료
-//Todo 3. 최초에 render()함수 1번 실행해주어 초기값 반영해주기
-// 초기실행 반영완료
-
 const $ul = document.querySelector("#todo-list");
 const $addBtn = document.querySelector("#add-btn");
 
+class Component {
+  $target;
+  $state;
+  constructor() {}
+  //method
+  setup() {}
+  template() {
+    return "";
+  }
+  render() {}
+  setEvent() {}
+  setState() {}
+}
+
+class App extends Component {
+  setup() {}
+  template() {}
+  setEvent() {}
+}
+
+new App(document.querySelector("#todo-list"));
 let state = {
   items: ["item1", "item2", "item3"],
   oters: ["1", "2"],
