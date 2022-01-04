@@ -1,10 +1,13 @@
-import App from "./app.js";
+import App from "./App.js";
 
-class Main {
-  constructor() {
-    const $app = document.querySelector("#app");
-    new App($app);
-  }
-}
+new App(document.querySelector("#app"));
+// import Items from "./components/Items.js";
 
-new Main();
+// export default class App {
+//   constructor() {
+//     const $app = document.querySelector("#app");
+//     new Items($app);
+//   }
+// }
+
+// new App();

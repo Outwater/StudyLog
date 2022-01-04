@@ -53,6 +53,7 @@ export default class Items extends Component {
     this.addEvent("click", ".addBtn", ({ target }) => {
       const { items } = this.$state;
       const $input = document.querySelector("#item-input");
+      console.log($input.value);
       const newItems = [
         ...items,
         {
@@ -61,10 +62,12 @@ export default class Items extends Component {
           active: true,
         },
       ];
+      console.log("1", $input.value);
       this.setState({ items: newItems });
     });
     this.addEvent("keyup", "#item-input", ({ key, target }) => {
       if (key !== "Enter") return;
+      console.log("gere");
       const { items } = this.$state;
       const seq = items[items.length - 1].seq + 1;
       const contents = target.value;
