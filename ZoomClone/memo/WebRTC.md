@@ -108,3 +108,95 @@
 - Media를 다루는 부분과 Form을 다루는 부분으로 분리
 
 - 다른 사용자가 입장했을 때 처리
+
+**Offers**
+
+- ![alt Signalling with Server](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/52f05b41-1bb2-4a60-9a58-740831a764d4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220105%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220105T021942Z&X-Amz-Expires=86400&X-Amz-Signature=55dcc0dc6d569dd86f905d3bad90404dd2e3ae7cc791a72ac6d654f9910b360d&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
+
+### RTC Connection 단계
+
+- Step 1
+
+  - PeerA send offer
+    - getUserMedia() : 영상과 카메라를 받아옴
+    - addStream()
+    - createOffer()
+    - setLocalDescription()
+  - Signalling Server
+    - send Offer to PeerB
+
+- Step 2
+  - PeerB send answer
+    - setRemoteDescription()
+    - getUserMedia()
+    - addStream()
+    - createAnswer()
+    - setLocalDescription
+  - Signalling Server
+    - send Answer to PeerA
+  - Peer A
+    - setRemoteDescription()
+- Step 3
+  - Peer A send candidate
+    - "icecandidate" event fired
+  - Signalling Server
+    - send candidate to PeerB
+  - PeerB send candidate
+    - addICECandidate()
+    - "icecandidate" event fired
+  - PeerA - addICECcandidate()
+
+### TODO
+
+- addStream 받기 전 RTC 연결하기
+
+  - 브라우저간의 RTC 연결 하기
+    - 각각의 세팅이 이뤄지고, socket 서버로 연결한다.
+  - startMedia 수정
+    - 방에 입장시 startMedia 호출
+    - getMedia 이후 makeConnection() 실행하도록 수정
+  - makeConnection()
+    - new RTCPeerConnection(); 으로 연결통로 만들고, 변수에 저장하여 사용
+
+- addStream();
+  - 카메라에서 오는 stream을 가져와 peer-to-peer 연결에 넣는 작업
+  - stream : `myStream.getTracks();`
+    - stream을 가져와 RTC연결에 추가해주도록 한다.
+      - myPeerConnection.addTrack(track, myStream)
+- createOffer()
+
+  - 상대방이 연결되었음을 알리는 이벤트 행위(offer)
+  - `const offer = await myPeerConnection.createOffer();`
+  - RTCConnection 내장함수를 통해 sdp속성에 문자열로된 초대장을 만듦
+
+- setLocalDescription
+
+  - 생성된 offer를 인자로 LocalDescription을 만들어 RTC연결에 등록해준다.
+  - myPeerConnection.setLocalDescription(offer)
+
+- sendOffer
+
+  - socket.emit("offer",offer, roomName);
+  - 소켓연결을 통해 상대방의 room으로 offer를 전달한다.
+
+- (Server)
+
+  - "offer"이벤트를 감지하여, 해당 방으로 offer를 보내준다.
+  - `socket.on("offer", (offer,roomName)=> { sockect.to(roomName).emit('offer',offer)})
+
+- (Client)
+  - PeerB는 "offer" 이벤트를 리슨하여, offer를 받는다.
+  - \*중요 Offer를 주고 받을 때에는 server연결이 필요하다.
+
+### Offer까지의 과정
+
+- A <br/>
+  방입장 > 서버에서 startMedia 호출 > getMedia > RTC 연결진행 > mediaTrack,Stream을 RTC통신에 등록
+- B <br/>
+  A있는 방 입장 > 위 과정 동일하게 진행 > 같은 방에 있는 A에게 'welcome'이벤트 전송
+- A <br/>
+  'welcome'리스너 > offer생성 후 RTC통신 등록 > 'offer'이벤트로 offer,roomName 전송
+- Server<br/>
+  'offer'리스너 > 해당 방의 다른 유저(B)에게 offer 전송
+- B <br/>
+  'offer'리스너 > A로 부터 생성된 offer를 받아 확인.

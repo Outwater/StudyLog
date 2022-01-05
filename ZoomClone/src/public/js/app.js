@@ -12,6 +12,7 @@ let myStream;
 let muted = false;
 let cameraOff = false;
 let roomName;
+let myPeerConnection;
 
 async function getCameras() {
   try {
@@ -92,11 +93,14 @@ $camerasSelect.addEventListener("input", handleCameraChange);
 const $welcome = document.getElementById("welcome");
 const $welcomeForm = $welcome.querySelector("form");
 
-function startMedia() {
+async function startMedia() {
   $welcome.hidden = true;
   $call.hidden = false;
-  getMedia();
+  await getMedia();
+
+  makeConnection();
 }
+
 function handleWelcomeSubmit(e) {
   e.preventDefault();
   const $input = $welcomeForm.querySelector("input");
@@ -110,6 +114,29 @@ $welcomeForm.addEventListener("submit", handleWelcomeSubmit);
 
 //* Socket Event
 
-socket.on("welcome", () => {
-  console.log("someone joined, 참가 확인 후 필요메서드 구현가능(signaling)");
+socket.on("welcome", async () => {
+  // 상대연결 확인되면 offer 만들어 전송
+  const offer = await myPeerConnection.createOffer();
+  // RTC연결에 offer를 등록
+  myPeerConnection.setLocalDescription(offer);
+  console.log("send the offer");
+  socket.emit("offer", offer, roomName);
 });
+//PeerB는 전송한 'offer'를 받아 확인한다.
+socket.on("offer", (offer) => {
+  console.log(offer);
+});
+
+//* RTC 연결하기
+
+function makeConnection() {
+  myPeerConnection = new RTCPeerConnection();
+  myStream.getTracks().forEach((track) => {
+    myPeerConnection.addTrack(track, myStream);
+  });
+}
+// A: 방입장 > A:서버에서 startMedia 호출 > A:getMedia > A:RTC 연결진행 > A: mediaTrack,Stream을 RTC통신에 등록
+// B: A있는 방 입장 > 위 과정 동일하게 진행 > 같은 방에 있는 A에게 'welcome'이벤트 전송
+// A: 'welcome'리스너 > offer생성 후 RTC통신 등록 > 'offer'이벤트로 offer,roomName 전송
+// Server: 'offer'리스너 > 해당 방의 다른 유저(B)에게 offer 전송
+// B: 'offer'리스너 > A로 부터 생성된 offer를 받아 확인.
