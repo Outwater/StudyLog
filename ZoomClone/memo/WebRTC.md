@@ -77,3 +77,34 @@
   - sol2. Stream.getVideoTracks();
     - 최초실행 시 호출되는 getCameras()함수 내에서, 모든 cameras를 순회하며 option들을 만들어 줄 때, 현재 Camera와 일치할 경우 `option.selected = true`로 변경
     - 현재 연결된 카메라 정보는 `myStream.getVideoTracks()`로 받아올 수 있다.
+
+### WebRTC
+
+**INTRO**
+
+- peer-to-peer 실시간 커뮤니케이션 서비스
+  - <-> webSocket & Socket.IO은 peer간의 통신을 서버가 중개하는 서비스(not peer-to-peer)
+  - 사용자간 연결되어, 영상과 오디오를 직접 주고받는 통신
+  - 서버를 거칠 필요가 없기 때문에, 서버부하가 적다
+- signaling 과정이 끝나면 peer-to-peer연결이된다. (브라우저-브라우저 연결)
+  - 상대방의 주소를 알고 연결하기 위해서 서버를 사용 (Signaling단계)
+  - ![alt Signaling](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d34ea727-3a06-45ba-9c49-a58b592aebdb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220105%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220105T010404Z&X-Amz-Expires=86400&X-Amz-Signature=1a70f1c464c48354e7f8b434c68170c18293d04582cee70cda794c706a2c707c&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
+
+**Rooms**
+
+- videocall 처리를 위해서는 rooms이 필요
+- UI 수정
+  - room 입장하는 섹션과, videocall을 받는 부분
+- 로직 수정
+
+  - call화면과 getMedia()로 바로 불러오지 않고, room에 참가할 경우 call화면 보여주기
+
+- 방 입장 로직 작성
+
+  - socket연결을 통해 room 입장
+  - 방 입장 시, call화면 보여주고, getMedia()실행
+
+- 로직 모듈화
+- Media를 다루는 부분과 Form을 다루는 부분으로 분리
+
+- 다른 사용자가 입장했을 때 처리
