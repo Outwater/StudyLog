@@ -16,6 +16,7 @@ export class Component {
     this.state = observable(this.initState());
     // state가 변경 시, 렌더링, 이벤트처리, 렌더이후실행함수(mounted)를 실행한다.
     observe(() => {
+      console.log("reRendering");
       this.render();
       this.setEvent();
       this.mounted();
