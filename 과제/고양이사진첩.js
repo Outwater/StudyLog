@@ -1,13 +1,16 @@
+console.log("connected");
+const $Breadcrumb = document.querySelector(".Breadcrumb");
+const $Nodes = document.querySelector(".Nodes");
+
 $Breadcrumb.addEventListener("click", handleCrumbClick);
+$Nodes.addEventListener("click", handleNodeClick);
 
 let currentPathArr = [];
-let currentPath = 0; // or id (0,1,2,3,4,)
 let currentDirs; // [{id,name,type,filePath,parent},{ }, ... ]
 init();
 
 function init() {
   console.log("init실행");
-
   // BreadCrumb 초기화
   $Breadcrumb.innerHTML = "";
   currentPathArr.push(["root"]);
@@ -29,24 +32,22 @@ function init() {
     .catch((e) => console.log(e));
 }
 
-function handleCrumbClick() {
-  console.log("handleCrumbClicked");
-  // 현재path이동
-  // fetch(현재path)
-  // renderDirs(현재id)
+function fetchDir(id) {
+  fetch(
+    `https://zl3m4qq0l9.execute-api.ap-northeast-2.amazonaws.com/dev/${nodeId}`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+      currentDirs = data;
+      console.log("fetchDirs are Accepted! currentDirs: ", currentDirs);
+      renderCrumb(id);
+      renderDirs(data);
+    })
+    .catch((e) => console.log(e));
 }
 
-function handleNodeClick() {
-  console.log("handleNodeClicked");
-  // 클릭 전 노드 정보 필요(부모)
+function renderCrumb(id) {}
 
-  // type = DIRECTORY
-
-  // type = FILE
-
-  // type = null (뒤로가기)
-}
-async function renderCrumb(id) {}
 function renderDirs(data) {
   $Nodes.innerHTML = "";
   data.map((node) => {
@@ -67,16 +68,19 @@ function renderDirs(data) {
   });
 }
 
-function fetchDir(id) {
-  fetch(
-    `https://zl3m4qq0l9.execute-api.ap-northeast-2.amazonaws.com/dev/${nodeId}`
-  )
-    .then((res) => res.json())
-    .then((data) => {
-      currentDirs = data;
-      console.log("fetchDirs are Accepted! currentDirs: ", currentDirs);
-      renderCrumb(id);
-      renderDirs(data);
-    })
-    .catch((e) => console.log(e));
+function handleCrumbClick() {
+  console.log("handleCrumbClicked");
+  // 현재path이동
+  // fetch(현재path)
+  // renderDirs(현재id)
+}
+function handleNodeClick() {
+  console.log("handleNodeClicked");
+  // 클릭 전 노드 정보 필요(부모)
+
+  // type = DIRECTORY
+
+  // type = FILE
+
+  // type = null (뒤로가기)
 }
