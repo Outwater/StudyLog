@@ -78,9 +78,9 @@
     - 최초실행 시 호출되는 getCameras()함수 내에서, 모든 cameras를 순회하며 option들을 만들어 줄 때, 현재 Camera와 일치할 경우 `option.selected = true`로 변경
     - 현재 연결된 카메라 정보는 `myStream.getVideoTracks()`로 받아올 수 있다.
 
-### WebRTC
+# WebRTC
 
-**INTRO**
+## INTRO
 
 - peer-to-peer 실시간 커뮤니케이션 서비스
   - <-> webSocket & Socket.IO은 peer간의 통신을 서버가 중개하는 서비스(not peer-to-peer)
@@ -90,7 +90,7 @@
   - 상대방의 주소를 알고 연결하기 위해서 서버를 사용 (Signaling단계)
   - ![alt Signaling](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/d34ea727-3a06-45ba-9c49-a58b592aebdb/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220105%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220105T010404Z&X-Amz-Expires=86400&X-Amz-Signature=1a70f1c464c48354e7f8b434c68170c18293d04582cee70cda794c706a2c707c&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
 
-**Rooms**
+## Rooms
 
 - videocall 처리를 위해서는 rooms이 필요
 - UI 수정
@@ -109,7 +109,7 @@
 
 - 다른 사용자가 입장했을 때 처리
 
-**Offers**
+## **Offers**
 
 - ![alt Signalling with Server](https://s3.us-west-2.amazonaws.com/secure.notion-static.com/52f05b41-1bb2-4a60-9a58-740831a764d4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45EIPT3X45%2F20220105%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20220105T021942Z&X-Amz-Expires=86400&X-Amz-Signature=55dcc0dc6d569dd86f905d3bad90404dd2e3ae7cc791a72ac6d654f9910b360d&X-Amz-SignedHeaders=host&response-content-disposition=filename%20%3D%22Untitled.png%22&x-id=GetObject)
 
@@ -146,7 +146,7 @@
     - "icecandidate" event fired
   - PeerA - addICECcandidate()
 
-### TODO
+### 코드 작성(TODO)
 
 - addStream 받기 전 RTC 연결하기
 
@@ -200,3 +200,26 @@
   'offer'리스너 > 해당 방의 다른 유저(B)에게 offer 전송
 - B <br/>
   'offer'리스너 > A로 부터 생성된 offer를 받아 확인.
+
+## Answers
+
+- 지금까지 구현한 것 <br>
+  `getUserMedia()`로 사용자 장치를 가져와서 `addStream()`을 통해 RTC연결망에 Stream을 등록한다. 이후 `createOffer()`로 연결을 위한 초대장을 만들고 `setLocalDescription()`으로 RTC연결망에 offer정보를 등록한다.
+- 해야할 것 <br>
+  전달된 'offer'를 가지고 PeerB에게 offer정보를 등록하는 것<br>
+  <Step 2>
+  - setRemoteDescription()
+  - getUserMedia()
+  - addStream()
+  - createAnswer()
+  - setLocalDescription
+
+### setRemoteDescription
+
+- peerB의 description을 세팅하는 작업
+
+//TODO
+
+- 'offer'리스너로 server에서 새로운 사람이 들어온 이벤트를 보내주었을 때 `RTC.setRemoteDescription(offer)`
+
+- error 발생, RTC is undefinend
