@@ -1,16 +1,22 @@
-import { observable } from "./core/observer.js";
+import { createStore } from "./core/Store.js";
 
-export const store = {
-  state: observable({
-    a: 10,
-    b: 20,
-  }),
+const initState = { a: 10, b: 20 };
 
-  setState(newState) {
-    for (const [key, value] of Object.entries(newState)) {
-      //newState의 key가 현재 state에 존재하지 않다면, 추가하지않고 무시
-      if (!this.state[key]) continue;
-      this.state[key] = value;
-    }
-  },
-};
+export const store = createStore((state = initState, action = {}) => {
+  switch (action.type) {
+    case `SET_A`:
+      return { ...state, a: action.payload };
+    case `SET_B`:
+      return { ...state, b: action.payload };
+    default:
+      return state;
+  }
+});
+
+// reducer에서 사용할 action을 정의한다.
+export const setA = (payload) => ({ type: "SET_A", payload });
+export const setB = (payload) => ({ type: "SET_B", payload });
+
+// dispatch에서 사용될 type들을 정의해준다.
+// export const SET_A = 'SET_A';
+// export const SET_B = 'SET_B';
