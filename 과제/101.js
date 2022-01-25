@@ -29,7 +29,7 @@ function cmp(a, b) {
   return a - b;
 }
 
-function solution(A, B) {
+function solution1(A, B) {
   var n = A.length;
   var m = B.length;
   A.sort(cmp);
@@ -41,9 +41,11 @@ function solution(A, B) {
   }
   return -1;
 }
-// console.log(solution([1, 3, 2, 1], [4, 2, 5, 3, 2]));
-// console.log(solution([4, 2, 5, 3, 2], [1, 3, 2, 1]));
-// console.log(solution([1, 1, 2, 3, 5], [4, 4, 4, 4, 5]));
+//A[k]-n  B[i] -m
+console.log(solution1([1, 3, 2, 1], [4, 2, 5, 3, 2])); //2
+// [1,1,2,3] [2,2,3,4,5]
+console.log(solution1([4, 2, 5, 3, 2], [1, 3, 2, 1])); //2
+console.log(solution1([1, 1, 2, 3, 5], [4, 4, 4, 4, 5])); //5
 
 // function solution(S, C) {
 //   let targetList = [];
@@ -64,7 +66,7 @@ function solution(A, B) {
 
 // }
 
-function solution(S, C) {
+function solution3(S, C) {
   let total = 0;
   let mincost;
 
@@ -85,11 +87,11 @@ function solution(S, C) {
   return total;
 }
 
-// console.log(solution("abccbd", [0, 1, 2, 3, 4, 5]));
-// console.log(solution("aabbcc", [1, 2, 1, 2, 1, 2]));
-// console.log(solution("aaaa", [3, 4, 5, 6]));
-// console.log(solution("ababa", [10, 5, 10, 5, 10]));
-// console.log(solution("aaabbcc", [1, 2, 3, 1, 2, 1, 2])); //5
+console.log(solution3("abccbd", [0, 1, 2, 3, 4, 5])); //2
+console.log(solution3("aabbcc", [1, 2, 1, 2, 1, 2])); //3
+console.log(solution3("aaaa", [3, 4, 5, 6])); // 12
+console.log(solution3("ababa", [10, 5, 10, 5, 10])); // 0
+console.log(solution3("aaabbcc", [1, 2, 3, 1, 2, 1, 2])); //5
 
 /*
 3.
