@@ -8,8 +8,16 @@
   - [x] 폴더구조 세팅
   - [ ] Redux , Redux toolkit 사용
 - 기본적인 마크업 적용
+
   - [x] 페이지 나누어 렌더링
   - [x] 라우팅 처리
+
+- React Query로 ServerState 처리
+
+  - [ ] React Query 공식문서 읽어보기
+  - [ ] 데이터 확인
+  - [ ] 받아온 데이터로 리스트렌더링
+
 - GNB
   - [ ]
 - [ ] 상품목록 페이지
