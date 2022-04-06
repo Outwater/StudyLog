@@ -1,27 +1,23 @@
-const storage = (function (storage) {
-  const setItem = (key, value) => {
-    try {
-      storage.setItem(key, value);
-    } catch (e) {
-      console.log(e);
-    }
-  };
+export const storage = window.localStorage;
 
-  const getItem = (key, defaultValue) => {
-    try {
-      const storedValue = storage.getItem(key);
+export const setItem = (key, value) => {
+  try {
+    storage.setItem(key, value);
+  } catch (e) {
+    console.log(e);
+  }
+};
 
-      if (storedValue) {
-        return JSON.parse(storedValue);
-      }
-      return defaultValue;
-    } catch (e) {
-      console.log(e);
-      return defaultValue;
+export const getItem = (key, defaultValue) => {
+  try {
+    const storedValue = storage.getItem(key);
+
+    if (storedValue) {
+      return JSON.parse(storedValue);
     }
-  };
-  return {
-    getItem,
-    setItem,
-  };
-})(window.localStorage);
+    return defaultValue;
+  } catch (e) {
+    console.log(e);
+    return defaultValue;
+  }
+};
