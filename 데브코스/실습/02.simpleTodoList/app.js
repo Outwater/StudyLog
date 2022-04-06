@@ -6,7 +6,10 @@ function App({ $target, initialState }) {
   new TodoForm({
     $target,
     onSubmit: (text) => {
-      todoList.setState([...todoList.state, { text }]);
+      const nextState = [...todoList.state, { text }];
+      todoList.setState(nextState);
+
+      storage.setItem("todos", JSON.stringify(nextState));
     },
   });
 

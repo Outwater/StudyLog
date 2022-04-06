@@ -1,7 +1,4 @@
-const data = [
-  { id: 0, text: "todo1" },
-  { id: 1, text: "todo2" },
-];
+const data = storage.getItem("todos", [{ text: "첫번째 " }]);
 
 const $app = document.querySelector(".app");
 
