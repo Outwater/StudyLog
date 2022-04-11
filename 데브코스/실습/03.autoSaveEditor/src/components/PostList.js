@@ -12,10 +12,7 @@ export default function PostList({ $target, posts, onPostClick }) {
 
   this.render = () => {
     $target.innerHTML = this.template();
-    this.mounted();
   };
-
-  this.mounted = () => {};
 
   this.render();
 }

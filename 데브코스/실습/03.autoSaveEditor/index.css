@@ -1,0 +1,26 @@
+#root {
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+  width: 700px;
+  min-width: 700px;
+  position: relative;
+  margin: 0 auto;
+}
+.page {
+  height: 100%;
+  text-align: center;
+}
+input {
+  width: 400px;
+  margin-bottom: 30px;
+}
+textarea {
+  width: 400px;
+  height: 600px;
+}
+
+li {
+  text-align: start;
+}

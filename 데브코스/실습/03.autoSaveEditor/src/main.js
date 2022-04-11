@@ -1,3 +1,3 @@
 import App from "./App.js";
-const $app = document.getElementById("app");
-new App({ $target: $app });
+const $root = document.getElementById("root");
+new App({ $target: $root });
