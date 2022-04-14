@@ -19,4 +19,21 @@ ServerState는 그 특징을 고려하여 React Query로 관리하고, 기존의
 
 3. 데이터 수정 액션에 따른 처리 해보기
 
--
+
+
+### 이슈
+
+Mutation 사용 시, mutation을 mutations에 모듈로 선언하고 가져왔을 때, invalid hook call 에러 발생
+
+: 컴포넌트 내부에서 선언 시 오류 발생x
+
+: hooks는 컴포넌트에서만 선언가능
+
+: muation.ts에서 바로 선언,사용할 수 없으며, mutation.ts에서 useMuataion을 반환하는 callback함수를 만들고, 
+callback함수를 컴포넌트 내에서 호출함으로, 컴포넌트 내부에서 hooks가 동작할 수 있도록 함.
+
+
+: (+@) mutate : onAddCart 를 통해 mutate함수에 대한 alias 설정 가능.
+
+
+: Typescript Generic 사용하는 것에 애먹음 mutator 타입 (https://joshua1988.github.io/ts/guide/generics.html#%EC%A0%9C%EB%84%A4%EB%A6%AD-%ED%83%80%EC%9E%85-%EB%B3%80%EC%88%98)
