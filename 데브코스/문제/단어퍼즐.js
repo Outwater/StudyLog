@@ -55,7 +55,7 @@ function solution(strs, t) {
     let cnt = 0;
     for (let i = 0; i < wordList.length; i++) {
       let word = wordList[i];
-      if (!word) return cnt;
+      if (!word || word.length > 5) return cnt;
       // 1) 초기 단어 사전존재x, 만들어진 단어도 x
       if (!strs.includes(word) && !memo.get(word)) {
         return;
@@ -83,6 +83,6 @@ function solution(strs, t) {
   return memo.get(t) || -1;
 }
 console.log(solution(["ab", "na", "n", "a", "bn"], "nabnabn")); // 4
-console.log(solution(["ba", "na", "n", "a"], "banana")); // 3
-console.log(solution(["app", "ap", "p", "l", "e", "ple", "pp"], "apple")); // 2
-console.log(solution(["ba", "an", "nan", "ban", "n"], "banana")); // -1
+// console.log(solution(["ba", "na", "n", "a"], "banana")); // 3
+// console.log(solution(["app", "ap", "p", "l", "e", "ple", "pp"], "apple")); // 2
+// console.log(solution(["ba", "an", "nan", "ban", "n"], "banana")); // -1
